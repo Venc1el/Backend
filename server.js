@@ -655,13 +655,17 @@ app.post("/login", async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
         if (passwordMatch) {
-            // Passwords match, generate a JWT token and send it to the client
+            // Passwords match, generate a JWT token
             const token = jwt.sign({ id: user.iduser, name: user.username, level: user.level }, "your-secret-key", {
                 expiresIn: "8h",
             });
+            
+            // Use res.cookie() to set the cookie
             res.cookie("token", token, {
-                    httpOnly: true,
-                    // Add other cookie options as needed
+                httpOnly: true,
+                secure: true, // Set to true if your app is served over HTTPS
+                sameSite: "None", // Required for cross-origin cookies
+                maxAge: 28800 * 1000, // Max-Age is in milliseconds, so 28800 seconds * 1000 ms/second
             });
 
             // Update the 'aktif' status to 1 here
@@ -678,6 +682,7 @@ app.post("/login", async (req, res) => {
         }
     });
 });
+
 
 app.get("/logout", verifyUser, (req, res) => {
     const userId = req.id;
