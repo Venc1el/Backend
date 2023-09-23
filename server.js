@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: ["https://welfarist-splicers.000webhostapp.com"],
+        origin: ["https://frontend-jambangan.vercel.app"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
     })
