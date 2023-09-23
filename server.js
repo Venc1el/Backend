@@ -16,10 +16,10 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(
-    cors(
+    cors({
         origin: ["https://welfarist-splicers.000webhostapp.com"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
-        credentials: true,)
+        credentials: true,})
 );
 
 const db = mysql.createConnection({
