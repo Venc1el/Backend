@@ -8,24 +8,26 @@ const multer = require("multer");
 const path = require("path");
 const mime = require("mime-types");
 const moment = require('moment-timezone');
+const port = process.env.PORT || 8081;
 
+require('dotenv').config(); 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: ["https://web-jambangan-frontend-4yjxvtwvq-venc1els-projects.vercel.app"],
+        origin: ["http://localhost:5173"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
     })
 );
 
 const db = mysql.createConnection({
-    host: "sql12.freesqldatabase.com",
-    user: "sql12648472",
-    password: "aD5DSAWD6j",
-    database: "sql12648472",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 });
 
 //Verifikasi user / akun
@@ -749,6 +751,6 @@ app.get("/public/posts/:postId", (req, res) => {
 });
 
 
-app.listen(8081, () => {
-    console.log("server is listening in port 8081");
+app.listen(port, () => {
+    console.log("server is listening");
 });
