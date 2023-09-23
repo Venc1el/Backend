@@ -659,7 +659,10 @@ app.post("/login", async (req, res) => {
             const token = jwt.sign({ id: user.iduser, name: user.username, level: user.level }, "your-secret-key", {
                 expiresIn: "8h",
             });
-            res.cookie("token", token);
+            res.cookie("token", token, {
+                    httpOnly: true,
+                    // Add other cookie options as needed
+            });
 
             // Update the 'aktif' status to 1 here
             db.query("UPDATE tbluser SET aktif = 1 WHERE iduser = ?", [user.iduser], (updateErr) => {
