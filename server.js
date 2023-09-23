@@ -19,7 +19,8 @@ app.use(
     cors({
         origin: ["https://welfarist-splicers.000webhostapp.com"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
-        credentials: true,})
+        credentials: true,
+    })
 );
 
 const db = mysql.createConnection({
