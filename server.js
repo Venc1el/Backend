@@ -662,11 +662,12 @@ app.post("/login", async (req, res) => {
             
             // Use res.cookie() to set the cookie
             res.cookie("token", token, {
-                httpOnly: true,
-                secure: true, // Set to true if your app is served over HTTPS
-                sameSite: "None", // Required for cross-origin cookies
-                maxAge: 28800 * 1000, // Max-Age is in milliseconds, so 28800 seconds * 1000 ms/second
-            });
+    httpOnly: true,
+    secure: true, // Set to true if your app is served over HTTPS
+    sameSite: "None", // Required for cross-origin cookies
+    domain: "https://delightful-tan-scallop.cyclic.cloud", // Use your custom domain here
+    maxAge: 28800 * 1000, // Max-Age is in milliseconds, so 28800 seconds * 1000 ms/second
+});
 
             // Update the 'aktif' status to 1 here
             db.query("UPDATE tbluser SET aktif = 1 WHERE iduser = ?", [user.iduser], (updateErr) => {
