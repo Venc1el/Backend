@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: ["http://welfarist-splicers.000webhostapp.com"],
+        origin: ["*"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
     })
