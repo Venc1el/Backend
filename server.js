@@ -16,11 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(
-    cors({
-        origin: ["*"],
-        methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
-        credentials: true,
-    })
+    cors()
 );
 
 const db = mysql.createConnection({
