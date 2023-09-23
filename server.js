@@ -30,6 +30,10 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 //Verifikasi user / akun
 const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
