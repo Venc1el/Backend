@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: ["https://welfarist-splicers.000webhostapp.com"],
+        origin: ["https://frontend-jambangan.vercel.app"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
          allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
@@ -29,10 +29,6 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 //Verifikasi user / akun
