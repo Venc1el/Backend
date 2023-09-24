@@ -640,7 +640,7 @@ app.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     // Find the user by username in the database (case-sensitive)
-    db.query("SELECT * FROM tbluser WHERE username COLLATE utf8_bin = ?", [username], async (err, data) => {
+    db.query("SELECT * FROM tbluser WHERE BINARY username = ?", [username], async (err, data) => {
         if (err) {
             return res.status(500).json({ message: "Server Error" });
         }
