@@ -20,6 +20,7 @@ app.use(
         origin: ["https://frontend-jambangan.vercel.app"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
+         allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
     })
 );
 
