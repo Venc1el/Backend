@@ -415,7 +415,7 @@ app.post(
             type,
             status,
             date,
-            keterangan
+            keterangan,
             iduser: userId,
         };
 
