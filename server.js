@@ -676,7 +676,7 @@ app.post("/login", async (req, res) => {
                     return res.status(500).json({ message: "Server Error" });
                 }
 
-                return res.json({ status: "Success", level: user.level });
+                return res.json({ status: "Success", level: user.level, token });
             });
         } else {
             // Incorrect username or password
