@@ -656,11 +656,18 @@ app.post("/login", async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
         if (passwordMatch) {
-            // Passwords match, generate a JWT token and send it to the client
+            // Passwords match, generate a JWT token
             const token = jwt.sign({ id: user.iduser, name: user.username, level: user.level }, "your-secret-key", {
                 expiresIn: "8h",
             });
-            res.cookie("token", token);
+            
+            // Use res.cookie() to set the cookie
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true, // Set to true if your app is served over HTTPS
+                sameSite: "None", // Required for cross-origin cookies
+                domain: "https://delightful-tan-scallop.cyclic.cloud", // Use your custom domain here
+            });
 
             // Update the 'aktif' status to 1 here
             db.query("UPDATE tbluser SET aktif = 1 WHERE iduser = ?", [user.iduser], (updateErr) => {
