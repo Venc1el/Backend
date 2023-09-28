@@ -666,7 +666,7 @@ app.post("/login", async (req, res) => {
                 httpOnly: true,
                 secure: true, // Set to true if your app is served over HTTPS
                 sameSite: "None", // Required for cross-origin cookies
-                domain: "https://delightful-tan-scallop.cyclic.cloud", // Use your custom domain here
+                domain: "https://frontend-jambangan.vercel.app", // Use your custom domain here
             });
 
             // Update the 'aktif' status to 1 here
