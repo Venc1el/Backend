@@ -415,7 +415,7 @@ app.post(
             type,
             status,
             date,
-            keterangan,
+            keterangan
             iduser: userId,
         };
 
@@ -656,12 +656,20 @@ app.post("/login", async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
         if (passwordMatch) {
-            // Passwords match, generate a JWT token
+            // Passwords match, generate a JWT token and send it to the client
             const token = jwt.sign({ id: user.iduser, name: user.username, level: user.level }, "your-secret-key", {
                 expiresIn: "8h",
             });
+            res.cookie("token", token);
 
-            return res.json({ status: "Success", token, level: user.level });
+            // Update the 'aktif' status to 1 here
+            db.query("UPDATE tbluser SET aktif = 1 WHERE iduser = ?", [user.iduser], (updateErr) => {
+                if (updateErr) {
+                    return res.status(500).json({ message: "Server Error" });
+                }
+
+                return res.json({ status: "Success", level: user.level });
+            });
         } else {
             // Incorrect username or password
             return res.status(401).json({ message: "Incorrect username or password." });
