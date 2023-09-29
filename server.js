@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: ["https://frontend-jambangan.vercel.app" , "http://localhost:5173"],
+        origin: ["https://frontend-jambangan.vercel.app"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
          allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
