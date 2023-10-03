@@ -540,7 +540,7 @@ app.put("/umkm/posts/:id", verifyUserAdmin, upload.single("image"), (req, res) =
 
     // Check if a new image is uploaded
     if (req.file) {
-        updatedPost.image = req.file.filename;
+        updatedPost.image = req.file.path;
     }
 
     db.query(
