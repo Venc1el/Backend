@@ -41,15 +41,6 @@ cloudinary.config({
     secure: true,
 });
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'images', // Specify the folder in Cloudinary where you want to upload the images
-        allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-        // Optional: Add other Cloudinary upload options here
-    },
-});
-
 //Verifikasi user / akun
 const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
@@ -224,7 +215,35 @@ app.get('/maps', (req, res) => {
 
 
 //-----------------------------------ADUAN---------------------------------------
-const upload = multer({ storage: storage });
+
+app.use(express.static(path.join(__dirname, "public")));
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/images");
+    },
+    filename: function (req, file, cb) {
+        const extension = mime.extension(file.mimetype);
+        const filename = `${Date.now()}.${extension}`;
+        cb(null, filename);
+    },
+});
+
+const upload = multer({
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(
+                new Error(
+                    "Invalid file type. Only JPEG, PNG, and GIF images are allowed."
+                )
+            );
+        }
+    },
+});
 
 app.get("/complaints", verifyUserAdmin, (req, res) => {
     const query = `
@@ -395,14 +414,14 @@ app.post(
     upload.single("image"),
     async (req, res) => {
         const { text, type, status, alamat, popup_content, coordinates, keterangan } = req.body;
-        const imageUrl = req.file.path;
+        const image_url = req.file ? req.file.filename : null;
         const date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
         const userId = req.id;
 
         const newComplaint = {
             text,
             alamat,
-            image_url :imageUrl,
+            image_url,
             type,
             status,
             date,
@@ -449,7 +468,7 @@ app.post(
     async (req, res) => {
         const { complaintId } = req.params;
         const { text, status } = req.body;
-        const image_url = req.file.path;
+        const image_url = req.file ? req.file.filename : null;
         const date = new Date().toISOString();
 
         const newResponse = {
@@ -535,7 +554,7 @@ app.delete("/umkm/:id", verifyUserAdmin, (req, res) => {
 
 app.post("/posts", verifyUser, upload.single("image"), (req, res) => {
     const { content, kategori, judul, alamat } = req.body;
-    const image = req.file.path;
+    const image = req.file ? req.file.filename : null;
 
     const newPost = {
         content,
