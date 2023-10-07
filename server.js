@@ -140,7 +140,6 @@ app.delete("/users/:id", verifyUserAdmin, (req, res) => {
 });
 
 //Tambah user / akun
-// Tambah user / akun
 app.post("/users", verifyUserAdmin, async (req, res) => {
     const { username, password, level, aktif } = req.body;
 
