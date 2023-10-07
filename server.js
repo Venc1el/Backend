@@ -140,20 +140,35 @@ app.delete("/users/:id", verifyUserAdmin, (req, res) => {
 });
 
 //Tambah user / akun
+// Tambah user / akun
 app.post("/users", verifyUserAdmin, async (req, res) => {
-    const newUser = {
-        username: req.body.username,
-        // Hash the password before storing it
-        password: await bcrypt.hash(req.body.password, 10), // Use bcrypt to hash the password
-        level: req.body.level,
-        aktif: req.body.aktif,
-    };
+    const { username, password, level, aktif } = req.body;
 
-    db.query("INSERT INTO tbluser SET ?", newUser, (err) => {
+    // Check if the username already exists in the database
+    db.query("SELECT * FROM tbluser WHERE username = ?", [username], async (err, existingUser) => {
         if (err) {
             return res.status(500).json({ message: "Server error" });
         }
-        return res.status(201).json({ message: "User created successfully" });
+
+        if (existingUser.length > 0) {
+            return res.status(400).json({ message: "Username already exists. Choose a different username." });
+        }
+
+        // If the username doesn't exist, proceed to add the new user
+        const newUser = {
+            username,
+            // Hash the password before storing it
+            password: await bcrypt.hash(password, 10), // Use bcrypt to hash the password
+            level,
+            aktif,
+        };
+
+        db.query("INSERT INTO tbluser SET ?", newUser, (err) => {
+            if (err) {
+                return res.status(500).json({ message: "Server error" });
+            }
+            return res.status(201).json({ message: "User created successfully" });
+        });
     });
 });
 
