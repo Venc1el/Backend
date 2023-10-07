@@ -174,22 +174,49 @@ app.post("/users", verifyUserAdmin, async (req, res) => {
 // Update User
 app.put("/users/:id", verifyUserAdmin, (req, res) => {
     const userId = req.params.id;
-    const updatedUser = {
-        username: req.body.username,
-    };
+    const { username, password } = req.body;
 
-    // Check if a new password is provided
-    if (req.body.password) {
-        // Hash the new password
-        bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-            if (err) {
-                console.error("Error hashing password:", err);
-                return res.status(500).json({ message: "Server Error" });
-            }
+    // Check if the username already exists in the database (excluding the current user)
+    db.query("SELECT * FROM tbluser WHERE username = ? AND iduser <> ?", [username, userId], async (err, existingUser) => {
+        if (err) {
+            return res.status(500).json({ message: "Server error" });
+        }
 
-            updatedUser.password = hashedPassword;
+        if (existingUser.length > 0) {
+            return res.status(400).json({ message: "Username already exists. Choose a different username." });
+        }
 
-            // Update the user's data in the database
+        const updatedUser = {
+            username,
+        };
+
+        // Check if a new password is provided
+        if (password) {
+            // Hash the new password
+            bcrypt.hash(password, 10, (err, hashedPassword) => {
+                if (err) {
+                    console.error("Error hashing password:", err);
+                    return res.status(500).json({ message: "Server Error" });
+                }
+
+                updatedUser.password = hashedPassword;
+
+                // Update the user's data in the database
+                db.query(
+                    "UPDATE tbluser SET ? WHERE iduser = ?",
+                    [updatedUser, userId],
+                    (err) => {
+                        if (err) {
+                            console.error("Error updating user:", err);
+                            return res.status(500).json({ message: "Server Error" });
+                        } else {
+                            return res.status(200).json({ message: "User updated successfully" });
+                        }
+                    }
+                );
+            });
+        } else {
+            // If no new password is provided, update only the username
             db.query(
                 "UPDATE tbluser SET ? WHERE iduser = ?",
                 [updatedUser, userId],
@@ -202,23 +229,10 @@ app.put("/users/:id", verifyUserAdmin, (req, res) => {
                     }
                 }
             );
-        });
-    } else {
-        // If no new password is provided, update only the username
-        db.query(
-            "UPDATE tbluser SET ? WHERE iduser = ?",
-            [updatedUser, userId],
-            (err) => {
-                if (err) {
-                    console.error("Error updating user:", err);
-                    return res.status(500).json({ message: "Server Error" });
-                } else {
-                    return res.status(200).json({ message: "User updated successfully" });
-                }
-            }
-        );
-    }
+        }
+    });
 });
+
 
 
 //--------------------------------MAPS----------------------------------
