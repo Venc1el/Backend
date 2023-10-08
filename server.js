@@ -255,7 +255,7 @@ app.get('/maps', (req, res) => {
 const upload = multer({ storage: storage });
 
 app.get("/complaints", verifyUserAdmin, (req, res) => {
-    
+
     db.query("SELECT * FROM tblcomplaints", (err, data) => {
         if (err) {
             return res.status(500).json({ message: "Server Error" });
@@ -383,31 +383,22 @@ app.get("/maps/all", (req, res) => {
     });
 });
 
-app.get("/maps/user/:iduser", verifyUser, (req, res) => {
-    const userId = req.params.iduser;
+app.get('/maps/user/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = `
+      SELECT m.coordinates, m.popup_content
+      FROM tblmaps AS m
+      JOIN tblcomplaints AS c ON m.complaint_id = c.idcomplaint
+      WHERE c.iduser = ?
+    `;
 
-    db.query("SELECT coordinates, popup_content FROM tblmaps WHERE iduser = ?", [userId], (err, results) => {
-        if (err) {
-            console.error("Error fetching user-specific map data:", err);
-            return res.status(500).json({ error: "Server error" });
+    db.query(query, [userId], (error, results) => {
+        if (error) {
+            console.error('Error fetching user-specific map data:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            res.status(200).json({ coordinates: results });
         }
-
-        // Initialize an array to store user-specific coordinates and popup_content
-        const userData = [];
-
-        // Loop through the results and parse each JSON string into an object
-        for (const result of results) {
-            if (result.coordinates) {
-                const data = {
-                    coordinates: JSON.parse(result.coordinates),
-                    popup_content: result.popup_content,
-                };
-                userData.push(data);
-            }
-        }
-
-        // Now, send the response with the user-specific map data
-        return res.status(200).json({ coordinates: userData });
     });
 });
 
@@ -427,7 +418,7 @@ app.post(
         const newComplaint = {
             text,
             alamat,
-            image_url :imageUrl,
+            image_url: imageUrl,
             type,
             status,
             date,
