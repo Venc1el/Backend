@@ -295,7 +295,7 @@ app.get("/complaints/:id", verifyUser, (req, res) => {
 
 // Add a new endpoint to retrieve report data for a specific user
 app.get("/reportData/:iduser", verifyUser, (req, res) => {
-    const iduser = req.params.userId;
+    const iduser = req.params.id;
 
     console.log(iduser);
 
