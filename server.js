@@ -256,28 +256,23 @@ const upload = multer({ storage: storage });
 
 app.get("/complaints", verifyUserAdmin, (req, res) => {
 
-    db.query("SELECT * FROM tblcomplaints", (err, data) => {
+    db.query(
+        ` SELECT 
+            tblcomplaints.idcomplaint, 
+            tblcomplaints.type, 
+            tblcomplaints.text, 
+            tblcomplaints.alamat, 
+            tblcomplaints.image_url, 
+            tblcomplaints.date, 
+            tblcomplaints.status,
+            tbluser.iduser,
+            tbluser.username 
+        FROM tblcomplaints
+        JOIN tbluser ON tblcomplaints.iduser = tbluser.iduser`, (err, data) => {
         if (err) {
             return res.status(500).json({ message: "Server Error" });
         }
         return res.status(200).json(data);
-    });
-});
-
-
-app.get("/complaints/:id", verifyUser, (req, res) => {
-    const complaintId = req.params.id;
-
-    db.query("SELECT * FROM tblcomplaints WHERE idcomplaint = ?", [complaintId], (err, data) => {
-        if (err) {
-            return res.status(500).json({ message: "Server Error" });
-        }
-
-        if (data.length === 0) {
-            return res.status(404).json({ message: "Complaint not found" });
-        }
-
-        return res.status(200).json(data[0]);
     });
 });
 
