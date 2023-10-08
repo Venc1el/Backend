@@ -397,8 +397,8 @@ app.get("/maps/all", (req, res) => {
     });
 });
 
-app.get('/maps/user/:id', (req, res) => {
-    const userId = req.params.userId;
+app.get('/maps/user/:id',verifyUser, (req, res) => {
+    const userId = req.id;
     const query = `
       SELECT m.coordinates, m.popup_content
       FROM tblmaps AS m
