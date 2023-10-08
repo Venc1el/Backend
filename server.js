@@ -276,6 +276,23 @@ app.get("/complaints", verifyUserAdmin, (req, res) => {
     });
 });
 
+app.get("/complaints/:id", verifyUser, (req, res) => {
+    const complaintId = req.params.id;
+
+    db.query("SELECT * FROM tblcomplaints WHERE idcomplaint = ?", [complaintId], (err, data) => {
+        if (err) {
+            return res.status(500).json({ message: "Server Error" });
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({ message: "Complaint not found" });
+        }
+
+        return res.status(200).json(data[0]);
+    });
+});
+
+
 // Add a new endpoint to retrieve report data for a specific user
 app.get("/reportData/:iduser", verifyUser, (req, res) => {
     const iduser = req.params.userId;
