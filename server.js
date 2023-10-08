@@ -396,7 +396,7 @@ app.get("/maps/all", (req, res) => {
 });
 
 app.get('/maps/user/:id', (req, res) => {
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const query = `
       SELECT m.coordinates, m.popup_content
       FROM tblmaps AS m
