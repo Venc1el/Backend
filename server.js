@@ -255,9 +255,9 @@ app.get('/maps', (req, res) => {
 const upload = multer({ storage: storage });
 
 app.get("/complaints", verifyUserAdmin, (req, res) => {
+    const userId = req.params.userId;
 
-    db.query(
-        ` SELECT 
+    db.query(` SELECT 
             tblcomplaints.idcomplaint, 
             tblcomplaints.type, 
             tblcomplaints.text, 
@@ -268,7 +268,7 @@ app.get("/complaints", verifyUserAdmin, (req, res) => {
             tbluser.iduser,
             tbluser.username 
         FROM tblcomplaints
-        JOIN tbluser ON tblcomplaints.iduser = tbluser.iduser`, (err, data) => {
+        JOIN tbluser ON tblcomplaints.iduser = tbluser.iduser`,[userId], (err, data) => {
         if (err) {
             return res.status(500).json({ message: "Server Error" });
         }
@@ -278,7 +278,7 @@ app.get("/complaints", verifyUserAdmin, (req, res) => {
 
 // Add a new endpoint to retrieve report data for a specific user
 app.get("/reportData/:iduser", verifyUser, (req, res) => {
-    const iduser = req.params.iduser;
+    const iduser = req.params.userId;
 
     // Query to get the total reports for the specified user
     const totalReportsQuery = `
