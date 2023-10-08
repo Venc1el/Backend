@@ -297,8 +297,6 @@ app.get("/complaints/:id", verifyUser, (req, res) => {
 app.get("/reportData/:iduser", verifyUser, (req, res) => {
     const iduser = req.id;
 
-    console.log(iduser);
-
     // Query to get the total reports for the specified user
     const totalReportsQuery = `
         SELECT COUNT(*) AS totalReports
