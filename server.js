@@ -383,6 +383,35 @@ app.get("/maps/all", (req, res) => {
     });
 });
 
+app.get("/maps/user/:iduser", verifyUser, (req, res) => {
+    const userId = req.params.iduser;
+
+    db.query("SELECT coordinates, popup_content FROM tblmaps WHERE iduser = ?", [userId], (err, results) => {
+        if (err) {
+            console.error("Error fetching user-specific map data:", err);
+            return res.status(500).json({ error: "Server error" });
+        }
+
+        // Initialize an array to store user-specific coordinates and popup_content
+        const userData = [];
+
+        // Loop through the results and parse each JSON string into an object
+        for (const result of results) {
+            if (result.coordinates) {
+                const data = {
+                    coordinates: JSON.parse(result.coordinates),
+                    popup_content: result.popup_content,
+                };
+                userData.push(data);
+            }
+        }
+
+        // Now, send the response with the user-specific map data
+        return res.status(200).json({ coordinates: userData });
+    });
+});
+
+
 
 // Route to insert complaints and map data
 app.post(
