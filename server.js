@@ -395,13 +395,13 @@ app.get("/maps/all", (req, res) => {
     });
 });
 
-app.get('/maps/user/:id',verifyUser, (req, res) => {
+app.get('/maps/user/:id', verifyUser, (req, res) => {
     const userId = req.id;
     const query = `
-      SELECT m.coordinates, m.popup_content
-      FROM tblmaps AS m
-      JOIN tblcomplaints AS c ON m.complaint_id = c.idcomplaint
-      WHERE c.iduser = ?
+        SELECT m.coordinates, m.popup_content
+        FROM tblmaps AS m
+        JOIN tblcomplaints AS c ON m.complaint_id = c.idcomplaint
+        WHERE c.iduser = ?
     `;
 
     db.query(query, [userId], (error, results) => {
@@ -409,10 +409,27 @@ app.get('/maps/user/:id',verifyUser, (req, res) => {
             console.error('Error fetching user-specific map data:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         } else {
-            res.status(200).json({ coordinates: results });
+            // Initialize an array to store formatted coordinates and popup_content
+            const formattedResults = [];
+
+            // Loop through the results and parse each JSON string into an object
+            for (const result of results) {
+                if (result.coordinates) {
+                    const coordinates = JSON.parse(result.coordinates);
+                    const formattedData = {
+                        coordinates,
+                        popup_content: result.popup_content
+                    };
+                    formattedResults.push(formattedData);
+                }
+            }
+
+            // Now, send the response with the expected structure
+            res.status(200).json({ coordinates: formattedResults });
         }
     });
 });
+
 
 
 
