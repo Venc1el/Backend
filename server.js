@@ -386,7 +386,7 @@ app.get("/maps/all", (req, res) => {
 app.get('/maps/user/:id', (req, res) => {
     const userId = req.params.id;
     const query = `
-      SELECT *
+      SELECT m.coordinates, m.popup_content
       FROM tblmaps AS m
       JOIN tblcomplaints AS c ON m.complaint_id = c.idcomplaint
       WHERE c.iduser = ?
