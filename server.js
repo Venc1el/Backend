@@ -10,7 +10,7 @@ const mime = require("mime-types");
 const moment = require('moment-timezone');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary')
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 3306;
 
 require('dotenv').config();
 const app = express();
