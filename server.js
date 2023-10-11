@@ -349,19 +349,6 @@ app.get("/reportData", verifyUserAdmin, (req, res) => {
     });
 });
 
-app.get("/complaints/responses", verifyUser, async (req, res) => {
-    // Query the database to get all complaint responses
-    db.query("SELECT * FROM tblcomplaint_responses", (err, results) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: "Server error" });
-        }
-
-        // Return the response records
-        return res.status(200).json({ responses: results });
-    });
-});
-
 
 app.get("/complaints/:complaintId/responses", verifyUser, async (req, res) => {
     const { complaintId } = req.params;
