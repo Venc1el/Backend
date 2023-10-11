@@ -353,16 +353,16 @@ app.get("/complaint_responses", verifyUserAdmin, async (req, res) => {
     try {
         // Query the database to get all complaint responses
         const results = await db.query("SELECT * FROM tblcomplaint_responses");
-
+        
         // Return the response records as an array
-        return res.status(200).json({ responses: results.rows || [] });
+        const responseArray = results.map(response => response); // Modify this line according to your response schema
+
+        return res.status(200).json({ responses: responseArray });
     } catch (error) {
         console.error("Database error:", error);
         return res.status(500).json({ error: "Server error" });
     }
 });
-
-
 
 app.get("/complaints/:complaintId/responses", verifyUser, async (req, res) => {
     const { complaintId } = req.params;
