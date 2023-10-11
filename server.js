@@ -349,18 +349,19 @@ app.get("/reportData", verifyUserAdmin, (req, res) => {
     });
 });
 
-app.get("/complaint_responses", verifyUserAdmin, async (req, res) => {
-    try {
-        // Query the database to get all complaint responses
-        const results = await db.query("SELECT * FROM tblcomplaint_responses");
-        
-        // Return the response records directly from the query results
+app.get("/complaint_responses", verifyUserAdmin, (req, res) => {
+    // Query the database to get all columns from tblcomplaint_responses
+    db.query("SELECT * FROM tblcomplaint_responses", (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Server error" });
+        }
+
+        // Return the response records
         return res.status(200).json({ responses: results });
-    } catch (error) {
-        console.error("Database error:", error);
-        return res.status(500).json({ error: "Server error" });
-    }
+    });
 });
+
 
 
 app.get("/complaints/:complaintId/responses", verifyUser, async (req, res) => {
