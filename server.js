@@ -357,11 +357,16 @@ app.get("/complaint_responses", verifyUserAdmin, async (req, res) => {
             return res.status(500).json({ error: "Server error" });
         }
 
-        // Return the response records
-        return res.status(200).json({ responses: results });
+        // Check if there are response records
+        if (results && results.length > 0) {
+            // Return the response records
+            return res.status(200).json({ responses: results });
+        } else {
+            // If there are no response records, return an empty array
+            return res.status(200).json({ responses: [] });
+        }
     });
 });
-
 
 
 app.get("/complaints/:complaintId/responses", verifyUser, async (req, res) => {
