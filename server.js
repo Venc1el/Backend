@@ -349,7 +349,7 @@ app.get("/reportData", verifyUserAdmin, (req, res) => {
     });
 });
 
-app.get("/complaint_responses", verifyUser, async (req, res) => {
+app.get("/complaint_responses", verifyUserAdmin, async (req, res) => {
     // Query the database to get all complaint responses
     db.query("SELECT * FROM tblcomplaint_responses", (err, results) => {
         if (err) {
