@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin: ["jambangan.vercel.app"],
+        origin: ["*"],
         methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
         credentials: true,
         allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
